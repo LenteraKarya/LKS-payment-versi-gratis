@@ -6,14 +6,15 @@
     <title>Online Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.css">
     <style>
         :root {
             --primary-color: #4a6bff;
-            --primary-light: #e8edff;
+            --primary-light: #e8f0fe;
             --secondary-color: #3a56d4;
             --accent-color: #5c8aff;
-            --dark-color: #1a1a2e;
-            --light-color: #f8f9fa;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
             --success-color: #10b981;
             --success-light: #d1fae5;
             --danger-color: #ef4444;
@@ -22,8 +23,8 @@
             --warning-light: #fef3c7;
             --info-color: #3b82f6;
             --info-light: #dbeafe;
-            --gray-color: #6b7280;
-            --gray-light: #f3f4f6;
+            --gray-color: #64748b;
+            --gray-light: #f1f5f9;
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -69,12 +70,12 @@
         .header h1 {
             font-size: 1.8rem;
             font-weight: 600;
-            margin-bottom: 5px;
         }
 
         .header-subtitle {
             font-size: 0.7rem;
             opacity: 0.8;
+            margin-top: 3px;
         }
 
         .header-info {
@@ -294,7 +295,7 @@
         }
 
         .badge-primary {
-            background-color: #e8edff;
+            background-color: #eef2ff;
             color: var(--primary-color);
         }
 
@@ -497,6 +498,41 @@
             display: flex;
             justify-content: flex-end;
             gap: 10px;
+        }
+
+        .setup-container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            border-radius: var(--rounded-xl);
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .setup-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .setup-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 600;
         }
 
         .receipt {
@@ -742,8 +778,8 @@
                 width: 95%;
             }
             
-            .login-container {
-                padding: 30px 20px;
+            .setup-container {
+                padding: 20px;
                 margin: 20px auto;
             }
         }
@@ -781,116 +817,30 @@
             margin-bottom: 15px;
         }
 
-        /* Animation classes */
-        .fade-in {
-            animation: fadeIn 0.3s ease;
+        /* Radio button group */
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
         }
 
-        .slide-up {
-            animation: slideUp 0.3s ease;
+        .radio-option {
+            flex: 1;
         }
 
-        /* Print button */
-        .print-btn {
-            background-color: var(--gray-color);
+        .radio-option input {
+            margin-right: 8px;
         }
 
-        .print-btn:hover {
-            background-color: #4b5563;
+        /* Select role */
+        .select-role {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
-        /* Setup form */
-        .setup-container {
-            max-width: 500px;
-            margin: 50px auto;
-            background: white;
-            border-radius: var(--rounded-xl);
-            padding: 40px;
-            box-shadow: var(--shadow-lg);
-            animation: slideUp 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .setup-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 8px;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .setup-title {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--primary-color);
-            font-size: 1.8rem;
-            font-weight: 600;
-        }
-
-        .form-floating {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .form-floating input, .form-floating select {
-            width: 100%;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: var(--rounded-sm);
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .form-floating input:focus, .form-floating select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(74, 107, 255, 0.2);
-        }
-
-        .form-floating label {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            color: #999;
-            transition: all 0.3s;
-            pointer-events: none;
-            background-color: white;
-            padding: 0 5px;
-        }
-
-        .form-floating input:focus + label,
-        .form-floating input:not(:placeholder-shown) + label,
-        .form-floating select:focus + label,
-        .form-floating select:not([value=""]) + label {
-            top: -10px;
-            left: 10px;
-            font-size: 0.8rem;
-            color: var(--primary-color);
-            font-weight: 500;
-        }
-
-        .setup-logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .setup-logo i {
-            font-size: 3rem;
-            color: var(--primary-color);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        .select-role select {
+            flex: 1;
         }
     </style>
 </head>
@@ -912,50 +862,53 @@
         </div>
     </div>
 
-    <!-- Setup Modal -->
+    <!-- Store Setup Modal -->
     <div id="setupModal" class="modal">
         <div class="setup-container">
-            <div class="setup-logo">
-                <i class="fas fa-store"></i>
-            </div>
-            <h2 class="setup-title">Setup Toko</h2>
+            <div class="setup-title">Setup Toko</div>
             <form id="setupForm">
-                <div class="form-floating">
-                    <input type="text" id="storeName" placeholder="Nama Toko" required>
+                <div class="form-group">
                     <label for="storeName">Nama Toko</label>
+                    <input type="text" id="storeName" class="form-control" placeholder="Masukkan nama toko" required>
                     <div class="error-message" id="storeNameError"></div>
                 </div>
                 
-                <div class="form-floating">
-                    <select id="userType" required>
-                        <option value=""></option>
+                <div class="form-group">
+                    <label>Anda sebagai:</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="ownerRole" name="userRole" value="owner" checked>
+                            <label for="ownerRole">Owner</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="employeeRole" name="userRole" value="employee">
+                            <label for="employeeRole">Karyawan</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="userPosition">Sebagai:</label>
+                    <select id="userPosition" class="form-control" required>
+                        <option value="kasir">Kasir</option>
                         <option value="owner">Owner</option>
-                        <option value="employee">Karyawan</option>
                     </select>
-                    <label for="userType">Sebagai</label>
-                    <div class="error-message" id="userTypeError"></div>
                 </div>
                 
-                <div class="form-floating">
-                    <input type="text" id="userName" placeholder="Nama Anda" required>
-                    <label for="userName">Nama Anda</label>
-                    <div class="error-message" id="userNameError"></div>
-                </div>
-                
-                <div class="form-floating">
-                    <input type="text" id="storeAddress" placeholder="Alamat Toko" required>
+                <div class="form-group">
                     <label for="storeAddress">Alamat Toko</label>
+                    <input type="text" id="storeAddress" class="form-control" placeholder="Masukkan alamat toko" required>
                     <div class="error-message" id="storeAddressError"></div>
                 </div>
                 
-                <div class="form-floating">
-                    <input type="tel" id="storePhone" placeholder="Nomor HP" required>
+                <div class="form-group">
                     <label for="storePhone">Nomor HP</label>
+                    <input type="tel" id="storePhone" class="form-control" placeholder="Masukkan nomor HP" required>
                     <div class="error-message" id="storePhoneError"></div>
                 </div>
                 
-                <button type="submit" class="btn btn-block" id="setupBtn">
-                    <span id="setupBtnText">Simpan</span>
+                <button type="submit" class="btn btn-block" id="saveSetupBtn">
+                    <span id="saveSetupBtnText">Simpan</span>
                 </button>
             </form>
         </div>
@@ -966,12 +919,12 @@
         <!-- Header -->
         <div class="header">
             <div>
-                <h1 id="storeNameHeader">Online Store</h1>
+                <h1>Online Store</h1>
                 <div class="header-subtitle">WebApp Versi.010499 By.Cendhanu (Lentera Karya Situbondo)</div>
             </div>
             <div class="header-info">
                 <p id="currentDate">Senin, 1 Januari 2023</p>
-                <p>Kasir: <span id="loggedInUser">John Doe</span> | <a href="#" id="logoutBtn" style="color: white; text-decoration: none;">Logout</a></p>
+                <p>Kasir: <span id="loggedInUser">Admin</span></p>
             </div>
         </div>
 
@@ -1001,6 +954,10 @@
                         </tbody>
                     </table>
                 </div>
+                
+                <button id="addProductBtn" class="btn btn-success btn-block">
+                    <i class="fas fa-plus"></i> Tambah Produk
+                </button>
             </div>
 
             <!-- Right Panel -->
@@ -1026,11 +983,6 @@
                     </div>
                 </div>
 
-                <div class="form-group mt-3">
-                    <label for="paymentAmount">Jumlah Pembayaran</label>
-                    <input type="number" id="paymentAmount" class="form-control" placeholder="Masukkan jumlah pembayaran">
-                </div>
-
                 <div class="payment-methods">
                     <label>Metode Pembayaran:</label>
                     <div class="payment-method">
@@ -1047,7 +999,12 @@
                     </div>
                 </div>
 
-                <button id="completePayment" class="btn btn-success btn-block mt-3">
+                <div class="form-group">
+                    <label for="paymentAmount">Jumlah Pembayaran</label>
+                    <input type="number" id="paymentAmount" class="form-control" placeholder="Masukkan jumlah pembayaran">
+                </div>
+
+                <button id="completePayment" class="btn btn-success btn-block">
                     <i class="fas fa-print"></i> Selesaikan & Cetak
                 </button>
             </div>
@@ -1058,7 +1015,7 @@
     <div id="receiptTemplate" style="display: none;">
         <div class="receipt">
             <div class="receipt-header">
-                <div class="receipt-title" id="receiptStoreName">TOKO CONTOH</div>
+                <div class="receipt-title" id="receiptStoreName">ONLINE STORE</div>
                 <div class="receipt-address" id="receiptStoreAddress">Kabupaten Situbondo - Provinsi Jawa Timur</div>
                 <div class="receipt-address" id="receiptStorePhone">Telp: 081234567890</div>
                 <div class="receipt-date" id="receiptDate">01/01/2023 10:00:00</div>
@@ -1082,7 +1039,44 @@
             </div>
             <div class="receipt-footer">
                 <div>Terima kasih telah berbelanja</div>
-                <div>Kasir: <span id="receiptCashier">John Doe</span></div>
+                <div>Kasir: <span id="receiptCashier">Admin</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="productModalTitle">Tambah Produk</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="productId">
+                <div class="form-group">
+                    <label for="productName">Nama Produk</label>
+                    <input type="text" id="productName" class="form-control" placeholder="Masukkan nama produk">
+                    <div class="error-message" id="productNameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="productCategory">Kategori</label>
+                    <input type="text" id="productCategory" class="form-control" placeholder="Masukkan kategori">
+                    <div class="error-message" id="productCategoryError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Harga</label>
+                    <input type="number" id="productPrice" class="form-control" placeholder="Masukkan harga">
+                    <div class="error-message" id="productPriceError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="productStock">Stok</label>
+                    <input type="number" id="productStock" class="form-control" placeholder="Masukkan stok awal">
+                    <div class="error-message" id="productStockError"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-product-modal">Batal</button>
+                <button class="btn btn-success save-product"><i class="fas fa-save"></i> Simpan</button>
             </div>
         </div>
     </div>
@@ -1095,27 +1089,14 @@
         const STORAGE_KEYS = {
             PRODUCTS: 'online_store_products',
             TRANSACTIONS: 'online_store_transactions',
-            SETTINGS: 'online_store_settings',
-            CURRENT_CART: 'online_store_current_cart',
-            USER: 'online_store_user'
+            STORE_INFO: 'online_store_info',
+            CURRENT_CART: 'online_store_current_cart'
         };
         
         // Initialize data
-        let products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS)) || [
-            { id: 'P001', barcode: '123456789', name: 'Produk Contoh 1', price: 10000, stock: 15 },
-            { id: 'P002', barcode: '987654321', name: 'Produk Contoh 2', price: 15000, stock: 8 },
-            { id: 'P003', barcode: '456789123', name: 'Produk Contoh 3', price: 20000, stock: 20 },
-            { id: 'P004', barcode: '321654987', name: 'Produk Contoh 4', price: 5000, stock: 30 }
-        ];
-        
+        let products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS)) || [];
         let transactions = JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSACTIONS)) || [];
-        
-        let settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS)) || {
-            storeName: "Online Store",
-            storeAddress: "Kabupaten Situbondo - Provinsi Jawa Timur",
-            storePhone: "081234567890",
-            taxRate: 10
-        };
+        let storeInfo = JSON.parse(localStorage.getItem(STORAGE_KEYS.STORE_INFO)) || null;
         
         // Current transaction
         let currentCart = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_CART)) || {
@@ -1124,9 +1105,6 @@
             subtotal: 0,
             total: 0
         };
-        
-        // Current user
-        let currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER)) || null;
         
         // Toast notification function
         function showToast(message, type = 'info', duration = 3000) {
@@ -1182,30 +1160,25 @@
         }
         
         $(document).ready(function() {
-            // Initialize data
-            initializeData();
-            
             // Set current date
             updateCurrentDate();
             
             // Update date every minute
             setInterval(updateCurrentDate, 60000);
             
-            // Show setup modal first if no settings exist
-            if (!currentUser) {
+            // Show setup modal if store info not set
+            if (!storeInfo) {
                 $('#setupModal').show();
             } else {
-                $('#loggedInUser').text(currentUser.name);
-                $('#mainApp').show();
-                loadProducts();
+                initializeApp();
             }
             
-            // Setup form handler
+            // Store setup form handler
             $('#setupForm').submit(function(e) {
                 e.preventDefault();
                 const storeName = $('#storeName').val().trim();
-                const userType = $('#userType').val();
-                const userName = $('#userName').val().trim();
+                const userRole = $('input[name="userRole"]:checked').val();
+                const userPosition = $('#userPosition').val();
                 const storeAddress = $('#storeAddress').val().trim();
                 const storePhone = $('#storePhone').val().trim();
                 
@@ -1217,16 +1190,6 @@
                 
                 if (!storeName) {
                     $('#storeNameError').text('Nama toko harus diisi').show();
-                    isValid = false;
-                }
-                
-                if (!userType) {
-                    $('#userTypeError').text('Pilih peran Anda').show();
-                    isValid = false;
-                }
-                
-                if (!userName) {
-                    $('#userNameError').text('Nama Anda harus diisi').show();
                     isValid = false;
                 }
                 
@@ -1242,129 +1205,157 @@
                 
                 if (!isValid) return;
                 
-                // Show loading state
-                $('#setupBtn').prop('disabled', true);
-                $('#setupBtnText').html('<div class="spinner"></div> Memproses...');
-                
-                // Simulate processing delay
-                setTimeout(() => {
-                    // Save settings
-                    settings = {
-                        storeName: storeName,
-                        storeAddress: storeAddress,
-                        storePhone: storePhone,
-                        taxRate: 10
-                    };
-                    
-                    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
-                    
-                    // Save user
-                    currentUser = {
-                        type: userType,
-                        name: userName
-                    };
-                    
-                    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
-                    
-                    // Update UI
-                    $('#storeNameHeader').text(storeName);
-                    $('#loggedInUser').text(userName);
-                    $('#receiptStoreName').text(storeName);
-                    $('#receiptStoreAddress').text(storeAddress);
-                    $('#receiptStorePhone').text('Telp: ' + storePhone);
-                    
-                    $('#setupModal').hide();
-                    $('#mainApp').fadeIn();
-                    
-                    // Load products
-                    loadProducts();
-                    
-                    // Reset setup button
-                    $('#setupBtn').prop('disabled', false);
-                    $('#setupBtnText').text('Simpan');
-                    
-                    // Show success toast
-                    showToast('Setup toko berhasil disimpan', 'success');
-                }, 1000);
-            });
-            
-            // Logout handler
-            $('#logoutBtn').click(function(e) {
-                e.preventDefault();
-                currentUser = null;
-                localStorage.removeItem(STORAGE_KEYS.USER);
-                $('#mainApp').fadeOut();
-                $('#setupModal').fadeIn();
-                
-                // Reset form
-                $('#storeName').val('');
-                $('#userType').val('');
-                $('#userName').val('');
-                $('#storeAddress').val('');
-                $('#storePhone').val('');
-                
-                // Show logout notification
-                showToast('Anda telah logout', 'info');
-            });
-            
-            // Complete payment
-            $('#completePayment').click(function() {
-                if (currentCart.items.length === 0) {
-                    showToast('Keranjang belanja kosong. Tambahkan produk terlebih dahulu.', 'warning');
-                    return;
-                }
-                
-                const paymentAmount = parseFloat($('#paymentAmount').val()) || 0;
-                
-                if (paymentAmount < currentCart.total) {
-                    showToast('Jumlah pembayaran kurang dari total yang harus dibayar.', 'error');
-                    return;
-                }
-                
-                // Create transaction
-                const transaction = {
-                    id: 'T' + moment().format('YYYYMMDDHHmmss'),
-                    date: new Date(),
-                    items: currentCart.items,
-                    subtotal: currentCart.subtotal,
-                    tax: currentCart.tax,
-                    total: currentCart.total,
-                    paymentMethod: $('input[name="paymentMethod"]:checked').val(),
-                    paymentAmount: paymentAmount,
-                    change: paymentAmount - currentCart.total,
-                    user: currentUser
+                // Save store info
+                storeInfo = {
+                    storeName: storeName,
+                    userRole: userRole,
+                    userPosition: userPosition,
+                    storeAddress: storeAddress,
+                    storePhone: storePhone,
+                    setupDate: new Date()
                 };
                 
-                // Update product stock
-                transaction.items.forEach(item => {
-                    const productIndex = products.findIndex(p => p.id === item.product.id);
-                    if (productIndex !== -1) {
-                        products[productIndex].stock -= item.quantity;
-                        if (products[productIndex].stock < 0) products[productIndex].stock = 0;
-                    }
-                });
+                localStorage.setItem(STORAGE_KEYS.STORE_INFO, JSON.stringify(storeInfo));
                 
-                // Save products with updated stock
-                saveProducts();
+                // Initialize app
+                initializeApp();
                 
-                // Add to transactions
-                transactions.unshift(transaction);
-                saveTransactions();
+                // Hide setup modal
+                $('#setupModal').hide();
                 
-                // Generate receipt
-                generateReceipt(transaction);
-                
-                // Print receipt automatically
-                window.print();
-                
-                // Reset cart
-                resetCart();
-                
-                // Show success message
-                showToast('Transaksi berhasil disimpan!', 'success');
+                // Show success toast
+                showToast('Setup toko berhasil disimpan', 'success');
             });
             
-            // Add product to cart
+            // Role radio button change
+            $('input[name="userRole"]').change(function() {
+                if ($(this).val() === 'owner') {
+                    $('#userPosition').val('owner');
+                } else {
+                    $('#userPosition').val('kasir');
+                }
+            });
+            
+            // Add product button
+            $('#addProductBtn').click(function() {
+                $('#productModalTitle').text('Tambah Produk');
+                $('#productId').val('');
+                $('#productName').val('');
+                $('#productCategory').val('');
+                $('#productPrice').val('');
+                $('#productStock').val('');
+                $('.error-message').hide();
+                $('#productModal').show();
+            });
+            
+            // Save product
+            $('.save-product').click(function() {
+                const productId = $('#productId').val();
+                const productName = $('#productName').val().trim();
+                const productCategory = $('#productCategory').val().trim();
+                const productPrice = parseFloat($('#productPrice').val()) || 0;
+                const productStock = parseInt($('#productStock').val()) || 0;
+                
+                // Reset error messages
+                $('.error-message').hide().text('');
+                
+                // Validate inputs
+                let isValid = true;
+                
+                if (!productName) {
+                    $('#productNameError').text('Nama produk harus diisi').show();
+                    isValid = false;
+                }
+                
+                if (!productCategory) {
+                    $('#productCategoryError').text('Kategori harus diisi').show();
+                    isValid = false;
+                }
+                
+                if (productPrice <= 0) {
+                    $('#productPriceError').text('Harga harus lebih dari 0').show();
+                    isValid = false;
+                }
+                
+                if (productStock < 0) {
+                    $('#productStockError').text('Stok tidak boleh negatif').show();
+                    isValid = false;
+                }
+                
+                if (!isValid) return;
+                
+                if (productId) {
+                    // Edit existing product
+                    const productIndex = products.findIndex(p => p.id === productId);
+                    if (productIndex !== -1) {
+                        products[productIndex] = {
+                            ...products[productIndex],
+                            name: productName,
+                            category: productCategory,
+                            price: productPrice,
+                            stock: productStock
+                        };
+                        
+                        showToast('Produk berhasil diperbarui', 'success');
+                    }
+                } else {
+                    // Add new product
+                    const newProduct = {
+                        id: 'P' + moment().format('YYYYMMDDHHmmss'),
+                        name: productName,
+                        category: productCategory,
+                        price: productPrice,
+                        stock: productStock
+                    };
+                    
+                    products.push(newProduct);
+                    showToast('Produk berhasil ditambahkan', 'success');
+                }
+                
+                // Save products
+                saveProducts();
+                
+                // Refresh product list
+                loadProducts();
+                
+                // Close modal
+                $('#productModal').hide();
+            });
+            
+            // Edit product (delegated event)
+            $(document).on('click', '.edit-product', function() {
+                const productId = $(this).data('id');
+                const product = products.find(p => p.id === productId);
+                
+                if (product) {
+                    $('#productModalTitle').text('Edit Produk');
+                    $('#productId').val(product.id);
+                    $('#productName').val(product.name);
+                    $('#productCategory').val(product.category);
+                    $('#productPrice').val(product.price);
+                    $('#productStock').val(product.stock);
+                    $('.error-message').hide();
+                    $('#productModal').show();
+                }
+            });
+            
+            // Delete product (delegated event)
+            $(document).on('click', '.delete-product', function() {
+                const productId = $(this).data('id');
+                const product = products.find(p => p.id === productId);
+                
+                showConfirmation(`Apakah Anda yakin ingin menghapus produk ${product?.name || 'ini'}?`, (confirmed) => {
+                    if (confirmed) {
+                        products = products.filter(p => p.id !== productId);
+                        saveProducts();
+                        loadProducts();
+                        
+                        showToast('Produk berhasil dihapus', 'success');
+                    }
+                });
+            });
+            
+            // Add product to cart (delegated event)
             $(document).on('click', '.add-to-cart', function() {
                 const productId = $(this).data('id');
                 const product = products.find(p => p.id === productId);
@@ -1398,7 +1389,7 @@
                 }
             });
             
-            // Remove item from cart
+            // Remove item from cart (delegated event)
             $(document).on('click', '.remove-from-cart', function() {
                 const productId = $(this).data('id');
                 const product = products.find(p => p.id === productId);
@@ -1410,7 +1401,7 @@
                 }
             });
             
-            // Update item quantity in cart
+            // Update item quantity in cart (delegated event)
             $(document).on('change', '.cart-item-quantity', function() {
                 const productId = $(this).data('id');
                 const quantity = parseInt($(this).val()) || 1;
@@ -1430,6 +1421,68 @@
                 }
             });
             
+            // Complete payment
+            $('#completePayment').click(function() {
+                const paymentAmount = parseFloat($('#paymentAmount').val()) || 0;
+                
+                if (currentCart.items.length === 0) {
+                    showToast('Keranjang belanja kosong', 'warning');
+                    return;
+                }
+                
+                if (paymentAmount < currentCart.total) {
+                    showToast('Jumlah pembayaran kurang dari total', 'error');
+                    return;
+                }
+                
+                // Create transaction
+                const transaction = {
+                    id: 'T' + moment().format('YYYYMMDDHHmmss'),
+                    date: new Date(),
+                    items: currentCart.items,
+                    subtotal: currentCart.subtotal,
+                    tax: currentCart.tax,
+                    total: currentCart.total,
+                    paymentMethod: $('input[name="paymentMethod"]:checked').val(),
+                    paymentAmount: paymentAmount,
+                    change: paymentAmount - currentCart.total,
+                    cashier: storeInfo.userPosition === 'owner' ? 'Owner' : 'Kasir'
+                };
+                
+                // Update product stock
+                transaction.items.forEach(item => {
+                    const productIndex = products.findIndex(p => p.id === item.product.id);
+                    if (productIndex !== -1) {
+                        products[productIndex].stock -= item.quantity;
+                        if (products[productIndex].stock < 0) products[productIndex].stock = 0;
+                    }
+                });
+                
+                // Save products with updated stock
+                saveProducts();
+                
+                // Add to transactions
+                transactions.unshift(transaction);
+                saveTransactions();
+                
+                // Generate receipt
+                generateReceipt(transaction);
+                
+                // Print receipt automatically
+                window.print();
+                
+                // Reset cart
+                resetCart();
+                
+                // Show success message
+                showToast('Transaksi berhasil disimpan!', 'success');
+            });
+            
+            // Close modals
+            $('.modal-close, .close-product-modal').click(function() {
+                $(this).closest('.modal').hide();
+            });
+            
             // Search products
             $('#productSearch').on('input', function() {
                 const searchTerm = $(this).val().toLowerCase();
@@ -1440,24 +1493,27 @@
         // Update current date
         function updateCurrentDate() {
             $('#currentDate').text(moment().format('dddd, D MMMM YYYY, HH:mm'));
-            $('#receiptDate').text(moment().format('DD/MM/YYYY HH:mm:ss'));
         }
         
-        // Initialize data
-        function initializeData() {
-            // Save initial data if not exists
-            saveProducts();
-            saveTransactions();
+        // Initialize app after setup
+        function initializeApp() {
+            // Update header with store info
+            $('#storeName').text(storeInfo.storeName);
+            $('#loggedInUser').text(storeInfo.userPosition === 'owner' ? 'Owner' : 'Kasir');
             
-            // Update UI with settings
-            $('#storeNameHeader').text(settings.storeName);
-            $('#receiptStoreName').text(settings.storeName);
-            $('#receiptStoreAddress').text(settings.storeAddress);
-            $('#receiptStorePhone').text('Telp: ' + settings.storePhone);
+            // Update receipt template with store info
+            $('#receiptStoreName').text(storeInfo.storeName);
+            $('#receiptStoreAddress').text(storeInfo.storeAddress);
+            $('#receiptStorePhone').text('Telp: ' + storeInfo.storePhone);
             
-            // Load initial data
+            // Load products
             loadProducts();
+            
+            // Update cart
             updateCart();
+            
+            // Show main app
+            $('#mainApp').fadeIn();
         }
         
         // Save data to local storage
@@ -1481,7 +1537,7 @@
             if (searchTerm) {
                 filteredProducts = filteredProducts.filter(p => 
                     p.name.toLowerCase().includes(searchTerm) || 
-                    p.barcode.toLowerCase().includes(searchTerm)
+                    p.category.toLowerCase().includes(searchTerm)
                 );
             }
             
@@ -1513,6 +1569,12 @@
                                     ${product.stock <= 0 ? 'disabled title="Stok habis"' : ''}>
                                     <i class="fas fa-cart-plus"></i> Tambah
                                 </button>
+                                <button class="btn btn-info btn-sm edit-product" data-id="${product.id}" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm delete-product" data-id="${product.id}" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </td>
                         </tr>
                     `);
@@ -1527,8 +1589,8 @@
                 return total + (item.product.price * item.quantity);
             }, 0);
             
-            // Calculate tax
-            currentCart.tax = (currentCart.subtotal * settings.taxRate) / 100;
+            // Calculate tax (10%)
+            currentCart.tax = currentCart.subtotal * 0.1;
             
             // Calculate total
             currentCart.total = currentCart.subtotal + currentCart.tax;
@@ -1599,9 +1661,9 @@
             // Create receipt HTML
             let receiptHTML = `
                 <div class="receipt-header">
-                    <div class="receipt-title">${settings.storeName}</div>
-                    <div class="receipt-address">${settings.storeAddress}</div>
-                    <div class="receipt-address">Telp: ${settings.storePhone}</div>
+                    <div class="receipt-title">${storeInfo.storeName}</div>
+                    <div class="receipt-address">${storeInfo.storeAddress}</div>
+                    <div class="receipt-address">Telp: ${storeInfo.storePhone}</div>
                     <div class="receipt-date">${receiptDate}</div>
                 </div>
                 <div class="receipt-items">
@@ -1631,7 +1693,7 @@
                         <span>${formatCurrency(transaction.subtotal)}</span>
                     </div>
                     <div class="receipt-item">
-                        <span>Pajak (${settings.taxRate}%)</span>
+                        <span>Pajak (10%)</span>
                         <span>${formatCurrency(transaction.tax)}</span>
                     </div>
                     <div class="receipt-item">
@@ -1649,7 +1711,7 @@
                 </div>
                 <div class="receipt-footer">
                     <div>Terima kasih telah berbelanja</div>
-                    <div>Kasir: ${transaction.user.name}</div>
+                    <div>Kasir: ${transaction.cashier}</div>
                 </div>
             `;
             
