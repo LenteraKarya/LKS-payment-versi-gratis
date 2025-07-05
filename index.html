@@ -625,6 +625,18 @@
             padding-top: 10px;
         }
 
+        .receipt-brand {
+            font-size: 0.7rem;
+            margin-top: 5px;
+            color: #555;
+        }
+
+        .receipt-order-info {
+            font-size: 0.7rem;
+            margin-top: 5px;
+            color: #555;
+        }
+
         .float-right {
             float: right;
         }
@@ -888,6 +900,78 @@
             margin-top: 20px;
             text-align: center;
         }
+
+        /* Settings button */
+        .settings-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .settings-button:hover {
+            background-color: var(--secondary-color);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        /* Settings modal */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .settings-content {
+            background-color: white;
+            border-radius: var(--rounded-lg);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalFadeIn 0.3s;
+        }
+
+        .settings-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+        }
+
+        /* Discount input */
+        .discount-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .discount-input input {
+            flex: 1;
+        }
+
+        .discount-input select {
+            width: 80px;
+        }
     </style>
 </head>
 <body>
@@ -912,6 +996,57 @@
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="loading-spinner"></div>
         <p id="loadingText">Memproses...</p>
+    </div>
+
+    <!-- Settings Button -->
+    <div class="settings-button" id="settingsButton">
+        <i class="fas fa-cog"></i>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="settings-modal">
+        <div class="settings-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Pengaturan Aplikasi</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-title">Pengaturan Pajak & Diskon</div>
+                
+                <div class="form-group">
+                    <label for="taxRate">Persentase Pajak (%)</label>
+                    <input type="number" id="taxRate" class="form-control" min="0" max="100" step="0.1" placeholder="Masukkan persentase pajak">
+                </div>
+                
+                <div class="form-group">
+                    <label for="discountType">Tipe Diskon Default</label>
+                    <select id="discountType" class="form-control">
+                        <option value="percentage">Persentase (%)</option>
+                        <option value="fixed">Nominal Tetap</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="discountValue">Nilai Diskon Default</label>
+                    <div class="discount-input">
+                        <input type="number" id="discountValue" class="form-control" min="0" placeholder="Masukkan nilai diskon">
+                        <select id="discountValueType" class="form-control">
+                            <option value="percentage">%</option>
+                            <option value="fixed">Rp</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="receiptFooterText">Teks Footer Struk</label>
+                    <textarea id="receiptFooterText" class="form-control" rows="3" placeholder="Masukkan teks footer struk"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-settings-modal">Batal</button>
+                <button class="btn btn-success save-settings"><i class="fas fa-save"></i> Simpan Pengaturan</button>
+            </div>
+        </div>
     </div>
 
     <!-- Store Setup Modal -->
@@ -972,7 +1107,7 @@
         <div class="header">
             <div>
                 <h1 id="storeNameHeader">Online Store</h1>
-                <div class="header-subtitle">WebsApp Versi.010499 By.Cendhanu (Lentera Karya Situbondo)</div>
+                <div class="header-subtitle">WebApp Versi.010499 By.Cendhanu (Lentera Karya Situbondo)</div>
             </div>
             <div class="header-info">
                 <p id="currentDate">Senin, 1 Januari 2023</p>
@@ -1026,7 +1161,11 @@
                         <span class="summary-value" id="cartSubtotal">Rp 0</span>
                     </div>
                     <div class="summary-row">
-                        <span class="summary-label">Pajak (10%):</span>
+                        <span class="summary-label">Diskon:</span>
+                        <span class="summary-value" id="cartDiscount">Rp 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Pajak (<span id="taxPercentage">10</span>%):</span>
                         <span class="summary-value" id="cartTax">Rp 0</span>
                     </div>
                     <div class="summary-row total-row">
@@ -1067,6 +1206,8 @@
     <div id="receiptPrint" style="display: none;">
         <div class="receipt">
             <div class="receipt-header">
+                <div class="receipt-brand">WebApp Versi.010499 By.Cendhanu</div>
+                <div class="receipt-brand">Lentera Karya Situbondo</div>
                 <div class="receipt-title" id="receiptStoreName">ONLINE STORE</div>
                 <div class="receipt-address" id="receiptStoreAddress">Kabupaten Situbondo - Provinsi Jawa Timur</div>
                 <div class="receipt-address" id="receiptStorePhone">Telp: 081234567890</div>
@@ -1082,7 +1223,11 @@
                     <span id="receiptSubtotal">Rp 0</span>
                 </div>
                 <div class="receipt-item">
-                    <span>Pajak (10%)</span>
+                    <span>Diskon</span>
+                    <span id="receiptDiscount">Rp 0</span>
+                </div>
+                <div class="receipt-item">
+                    <span>Pajak (<span id="receiptTaxPercentage">10</span>%)</span>
                     <span id="receiptTax">Rp 0</span>
                 </div>
                 <div class="receipt-item">
@@ -1100,6 +1245,8 @@
             </div>
             <div class="receipt-footer">
                 <div>Terima kasih telah berbelanja</div>
+                <div class="receipt-order-info">Order Aplikasi Payment Pro</div>
+                <div class="receipt-order-info">kirim email: lenterakaryasitubondo@gmail.com</div>
                 <div>Kasir: <span id="receiptCashier">Admin</span></div>
             </div>
         </div>
@@ -1109,6 +1256,9 @@
             </button>
             <button id="downloadReceiptBtn" class="btn btn-success ml-2">
                 <i class="fas fa-download"></i> Download PDF
+            </button>
+            <button id="closeReceiptBtn" class="btn btn-secondary ml-2">
+                <i class="fas fa-times"></i> Tutup
             </button>
         </div>
     </div>
@@ -1159,17 +1309,25 @@
             PRODUCTS: 'online_store_products',
             TRANSACTIONS: 'online_store_transactions',
             STORE_INFO: 'online_store_info',
-            CURRENT_CART: 'online_store_current_cart'
+            CURRENT_CART: 'online_store_current_cart',
+            SETTINGS: 'online_store_settings'
         };
         
         // Initialize data
         let products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS)) || [];
         let transactions = JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSACTIONS)) || [];
         let storeInfo = JSON.parse(localStorage.getItem(STORAGE_KEYS.STORE_INFO)) || null;
+        let settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS)) || {
+            taxRate: 10,
+            discountType: 'percentage',
+            discountValue: 0,
+            receiptFooterText: 'Order Aplikasi Payment Pro\nkirim email: lenterakaryasitubondo@gmail.com'
+        };
         
         // Current transaction
         let currentCart = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_CART)) || {
             items: [],
+            discount: 0,
             tax: 0,
             subtotal: 0,
             total: 0
@@ -1239,6 +1397,15 @@
             return html2pdf().set(opt).from(element).save();
         }
         
+        // Calculate discount
+        function calculateDiscount(subtotal) {
+            if (settings.discountType === 'percentage') {
+                return subtotal * (settings.discountValue / 100);
+            } else {
+                return Math.min(settings.discountValue, subtotal);
+            }
+        }
+        
         $(document).ready(function() {
             // Set current date
             updateCurrentDate();
@@ -1246,12 +1413,76 @@
             // Update date every minute
             setInterval(updateCurrentDate, 60000);
             
+            // Load settings
+            loadSettings();
+            
             // Show setup modal if store info not set
             if (!storeInfo) {
                 $('#setupModal').show();
             } else {
                 initializeApp();
             }
+            
+            // Settings button click
+            $('#settingsButton').click(function() {
+                $('#settingsModal').show();
+            });
+            
+            // Close settings modal
+            $('.close-settings-modal').click(function() {
+                $('#settingsModal').hide();
+            });
+            
+            // Save settings
+            $('.save-settings').click(function() {
+                const taxRate = parseFloat($('#taxRate').val()) || 0;
+                const discountType = $('#discountType').val();
+                const discountValue = parseFloat($('#discountValue').val()) || 0;
+                const receiptFooterText = $('#receiptFooterText').val().trim();
+                
+                // Validate inputs
+                if (taxRate < 0 || taxRate > 100) {
+                    showToast('Persentase pajak harus antara 0-100%', 'error');
+                    return;
+                }
+                
+                if (discountValue < 0) {
+                    showToast('Nilai diskon tidak boleh negatif', 'error');
+                    return;
+                }
+                
+                // Update settings
+                settings = {
+                    taxRate: taxRate,
+                    discountType: discountType,
+                    discountValue: discountValue,
+                    receiptFooterText: receiptFooterText || 'Order Aplikasi Payment Pro\nkirim email: lenterakaryasitubondo@gmail.com'
+                };
+                
+                // Save to local storage
+                localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+                
+                // Update UI
+                $('#taxPercentage').text(taxRate);
+                
+                // Update cart calculations
+                updateCart();
+                
+                // Show success message
+                showToast('Pengaturan berhasil disimpan', 'success');
+                
+                // Close modal
+                $('#settingsModal').hide();
+            });
+            
+            // Discount type change
+            $('#discountType').change(function() {
+                if ($(this).val() === 'percentage') {
+                    $('#discountValueType').val('percentage');
+                } else {
+                    $('#discountValueType').val('fixed');
+                }
+            });
             
             // Store setup form handler
             $('#setupForm').submit(function(e) {
@@ -1552,6 +1783,7 @@
                                 date: new Date(),
                                 items: currentCart.items,
                                 subtotal: currentCart.subtotal,
+                                discount: currentCart.discount,
                                 tax: currentCart.tax,
                                 total: currentCart.total,
                                 paymentMethod: $('input[name="paymentMethod"]:checked').val(),
@@ -1616,14 +1848,14 @@
                 });
             });
             
+            // Close receipt
+            $(document).on('click', '#closeReceiptBtn, .close-receipt', function() {
+                $('#receiptPrint').hide();
+            });
+            
             // Close modals
             $('.modal-close, .close-product-modal').click(function() {
                 $(this).closest('.modal').hide();
-            });
-            
-            // Close receipt
-            $(document).on('click', '.close-receipt', function() {
-                $('#receiptPrint').hide();
             });
             
             // Search products
@@ -1636,6 +1868,18 @@
         // Update current date
         function updateCurrentDate() {
             $('#currentDate').text(moment().format('dddd, D MMMM YYYY, HH:mm'));
+        }
+        
+        // Load settings
+        function loadSettings() {
+            $('#taxRate').val(settings.taxRate);
+            $('#discountType').val(settings.discountType);
+            $('#discountValue').val(settings.discountValue);
+            $('#discountValueType').val(settings.discountType === 'percentage' ? 'percentage' : 'fixed');
+            $('#receiptFooterText').val(settings.receiptFooterText);
+            
+            // Update UI
+            $('#taxPercentage').text(settings.taxRate);
         }
         
         // Initialize app after setup
@@ -1727,11 +1971,15 @@
                 return total + (item.product.price * item.quantity);
             }, 0);
             
-            // Calculate tax (10%)
-            currentCart.tax = currentCart.subtotal * 0.1;
+            // Calculate discount
+            currentCart.discount = calculateDiscount(currentCart.subtotal);
+            
+            // Calculate tax
+            const taxableAmount = currentCart.subtotal - currentCart.discount;
+            currentCart.tax = taxableAmount * (settings.taxRate / 100);
             
             // Calculate total
-            currentCart.total = currentCart.subtotal + currentCart.tax;
+            currentCart.total = taxableAmount + currentCart.tax;
             
             // Save cart
             saveCurrentCart();
@@ -1769,6 +2017,7 @@
             
             // Update summary
             $('#cartSubtotal').text(formatCurrency(currentCart.subtotal));
+            $('#cartDiscount').text(formatCurrency(currentCart.discount));
             $('#cartTax').text(formatCurrency(currentCart.tax));
             $('#cartTotal').text(formatCurrency(currentCart.total));
         }
@@ -1777,6 +2026,7 @@
         function resetCart() {
             currentCart = {
                 items: [],
+                discount: 0,
                 tax: 0,
                 subtotal: 0,
                 total: 0
@@ -1820,12 +2070,28 @@
             
             // Update receipt summary
             $('#receiptSubtotal').text(formatCurrency(transaction.subtotal));
+            $('#receiptDiscount').text(formatCurrency(transaction.discount));
+            $('#receiptTaxPercentage').text(settings.taxRate);
             $('#receiptTax').text(formatCurrency(transaction.tax));
             $('#receiptTotal').text(formatCurrency(transaction.total));
             $('#receiptPaymentMethod').text(paymentMethod);
             $('#receiptPaymentAmount').text(formatCurrency(transaction.paymentAmount));
             $('#receiptChange').text(formatCurrency(transaction.change));
             $('#receiptCashier').text(transaction.cashier);
+            
+            // Split footer text into lines
+            const footerLines = settings.receiptFooterText.split('\n');
+            let footerHTML = '<div>Terima kasih telah berbelanja</div>';
+            
+            footerLines.forEach(line => {
+                if (line.trim()) {
+                    footerHTML += `<div class="receipt-order-info">${line.trim()}</div>`;
+                }
+            });
+            
+            footerHTML += `<div>Kasir: <span id="receiptCashier">${transaction.cashier}</span></div>`;
+            
+            $('.receipt-footer').html(footerHTML);
         }
     </script>
 </body>
