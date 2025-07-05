@@ -544,6 +544,8 @@
             box-shadow: var(--shadow-sm);
             position: relative;
             line-height: 1.4;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
 
         .receipt::after {
@@ -776,6 +778,8 @@
                 padding: 0;
                 margin: 0;
                 font-size: 12px;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
             
             .no-print {
@@ -807,6 +811,21 @@
             .setup-container {
                 padding: 20px;
                 margin: 20px auto;
+            }
+            
+            /* Fix for receipt text visibility on mobile */
+            .receipt {
+                font-size: 14px;
+                max-width: 100%;
+                padding: 15px;
+            }
+            
+            .receipt-item {
+                font-size: 12px;
+            }
+            
+            .receipt-title {
+                font-size: 16px;
             }
         }
 
@@ -972,6 +991,54 @@
         .discount-input select {
             width: 80px;
         }
+        
+        /* Backup/Restore section */
+        .backup-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .backup-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .backup-actions .btn {
+            flex: 1;
+        }
+        
+        /* File input for restore */
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        /* Enhanced receipt styling */
+        .receipt-enhanced {
+            font-size: 14px;
+        }
+        
+        .receipt-enhanced .receipt-item {
+            font-size: 13px;
+        }
+        
+        .receipt-enhanced .receipt-title {
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
@@ -1037,9 +1104,28 @@
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="receiptFooterText">Teks Footer Struk</label>
-                    <textarea id="receiptFooterText" class="form-control" rows="3" placeholder="Masukkan teks footer struk"></textarea>
+                <div class="backup-section">
+                    <div class="settings-title">Backup & Restore Data</div>
+                    
+                    <div class="form-group">
+                        <label>Cadangkan data produk dan transaksi</label>
+                        <div class="backup-actions">
+                            <button id="backupDataBtn" class="btn btn-info">
+                                <i class="fas fa-download"></i> Backup Data
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Restore data dari backup</label>
+                        <div class="file-input-wrapper">
+                            <button class="btn btn-warning btn-block">
+                                <i class="fas fa-upload"></i> Pilih File Backup
+                            </button>
+                            <input type="file" id="restoreFile" accept=".json">
+                        </div>
+                        <small class="text-muted">Pilih file backup (.json) untuk mengembalikan data</small>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1204,7 +1290,7 @@
 
     <!-- Receipt Template (Hidden) -->
     <div id="receiptPrint" style="display: none;">
-        <div class="receipt">
+        <div class="receipt receipt-enhanced">
             <div class="receipt-header">
                 <div class="receipt-brand">WebApp Versi.010499 By.Cendhanu</div>
                 <div class="receipt-brand">Lentera Karya Situbondo</div>
@@ -1320,8 +1406,7 @@
         let settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS)) || {
             taxRate: 10,
             discountType: 'percentage',
-            discountValue: 0,
-            receiptFooterText: 'Order Aplikasi Payment Pro\nkirim email: lenterakaryasitubondo@gmail.com'
+            discountValue: 0
         };
         
         // Current transaction
@@ -1406,6 +1491,54 @@
             }
         }
         
+        // Create backup data
+        function createBackupData() {
+            return {
+                products: JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS)) || [],
+                transactions: JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSACTIONS)) || [],
+                storeInfo: JSON.parse(localStorage.getItem(STORAGE_KEYS.STORE_INFO)) || null,
+                settings: JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS)) || {
+                    taxRate: 10,
+                    discountType: 'percentage',
+                    discountValue: 0
+                }
+            };
+        }
+        
+        // Download backup file
+        function downloadBackup() {
+            const backupData = createBackupData();
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", `backup_${moment().format('YYYYMMDD_HHmmss')}.json`);
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+        
+        // Restore from backup
+        function restoreFromBackup(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const backupData = JSON.parse(e.target.result);
+                        resolve(backupData);
+                    } catch (error) {
+                        reject('Format file backup tidak valid');
+                    }
+                };
+                
+                reader.onerror = function() {
+                    reject('Gagal membaca file');
+                };
+                
+                reader.readAsText(file);
+            });
+        }
+        
         $(document).ready(function() {
             // Set current date
             updateCurrentDate();
@@ -1438,7 +1571,6 @@
                 const taxRate = parseFloat($('#taxRate').val()) || 0;
                 const discountType = $('#discountType').val();
                 const discountValue = parseFloat($('#discountValue').val()) || 0;
-                const receiptFooterText = $('#receiptFooterText').val().trim();
                 
                 // Validate inputs
                 if (taxRate < 0 || taxRate > 100) {
@@ -1455,8 +1587,7 @@
                 settings = {
                     taxRate: taxRate,
                     discountType: discountType,
-                    discountValue: discountValue,
-                    receiptFooterText: receiptFooterText || 'Order Aplikasi Payment Pro\nkirim email: lenterakaryasitubondo@gmail.com'
+                    discountValue: discountValue
                 };
                 
                 // Save to local storage
@@ -1482,6 +1613,71 @@
                 } else {
                     $('#discountValueType').val('fixed');
                 }
+            });
+            
+            // Backup data button
+            $('#backupDataBtn').click(function() {
+                showLoading('Menyiapkan backup data...');
+                
+                setTimeout(() => {
+                    downloadBackup();
+                    hideLoading();
+                    showToast('Backup data berhasil diunduh', 'success');
+                }, 500);
+            });
+            
+            // Restore data from file
+            $('#restoreFile').change(function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                showConfirmation('Restore data akan menggantikan semua data saat ini. Lanjutkan?', (confirmed) => {
+                    if (confirmed) {
+                        showLoading('Memproses file backup...');
+                        
+                        restoreFromBackup(file)
+                            .then(backupData => {
+                                // Validate backup data
+                                if (!backupData.products || !backupData.transactions || !backupData.settings) {
+                                    throw new Error('Format backup tidak valid');
+                                }
+                                
+                                // Save backup data to local storage
+                                localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(backupData.products));
+                                localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(backupData.transactions));
+                                localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(backupData.settings));
+                                
+                                if (backupData.storeInfo) {
+                                    localStorage.setItem(STORAGE_KEYS.STORE_INFO, JSON.stringify(backupData.storeInfo));
+                                }
+                                
+                                // Reload data
+                                products = backupData.products;
+                                transactions = backupData.transactions;
+                                settings = backupData.settings;
+                                if (backupData.storeInfo) storeInfo = backupData.storeInfo;
+                                
+                                // Reset cart
+                                resetCart();
+                                
+                                // Reload UI
+                                loadProducts();
+                                loadSettings();
+                                
+                                // Show success message
+                                showToast('Data berhasil di-restore', 'success');
+                            })
+                            .catch(error => {
+                                showToast(error.message || 'Gagal memproses backup', 'error');
+                            })
+                            .finally(() => {
+                                hideLoading();
+                                $('#restoreFile').val('');
+                            });
+                    } else {
+                        $('#restoreFile').val('');
+                    }
+                });
             });
             
             // Store setup form handler
@@ -1876,7 +2072,6 @@
             $('#discountType').val(settings.discountType);
             $('#discountValue').val(settings.discountValue);
             $('#discountValueType').val(settings.discountType === 'percentage' ? 'percentage' : 'fixed');
-            $('#receiptFooterText').val(settings.receiptFooterText);
             
             // Update UI
             $('#taxPercentage').text(settings.taxRate);
@@ -2079,17 +2274,13 @@
             $('#receiptChange').text(formatCurrency(transaction.change));
             $('#receiptCashier').text(transaction.cashier);
             
-            // Split footer text into lines
-            const footerLines = settings.receiptFooterText.split('\n');
-            let footerHTML = '<div>Terima kasih telah berbelanja</div>';
-            
-            footerLines.forEach(line => {
-                if (line.trim()) {
-                    footerHTML += `<div class="receipt-order-info">${line.trim()}</div>`;
-                }
-            });
-            
-            footerHTML += `<div>Kasir: <span id="receiptCashier">${transaction.cashier}</span></div>`;
+            // Fixed footer text
+            const footerHTML = `
+                <div>Terima kasih telah berbelanja</div>
+                <div class="receipt-order-info">Order Aplikasi Payment Pro</div>
+                <div class="receipt-order-info">kirim email: lenterakaryasitubondo@gmail.com</div>
+                <div>Kasir: <span id="receiptCashier">${transaction.cashier}</span></div>
+            `;
             
             $('.receipt-footer').html(footerHTML);
         }
