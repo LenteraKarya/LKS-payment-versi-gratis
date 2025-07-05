@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Online Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -40,12 +40,14 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: #f5f7fa;
             color: #333;
             line-height: 1.6;
+            -webkit-text-size-adjust: 100%;
         }
 
         .container {
@@ -239,6 +241,7 @@
             border-radius: var(--rounded-sm);
             box-shadow: var(--shadow-sm);
             margin-bottom: 20px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .table {
@@ -373,6 +376,13 @@
             border: 1px solid #ddd;
             border-radius: 3px;
             padding: 3px;
+            -moz-appearance: textfield;
+        }
+
+        .cart-item-qty input::-webkit-outer-spin-button,
+        .cart-item-qty input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
 
         .cart-summary {
@@ -546,6 +556,7 @@
             line-height: 1.4;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            font-size: 14px;
         }
 
         .receipt::after {
@@ -813,11 +824,13 @@
                 margin: 20px auto;
             }
             
-            /* Fix for receipt text visibility on mobile */
+            /* Enhanced receipt styling for mobile */
             .receipt {
                 font-size: 14px;
                 max-width: 100%;
                 padding: 15px;
+                transform: scale(0.9);
+                transform-origin: top center;
             }
             
             .receipt-item {
@@ -826,6 +839,27 @@
             
             .receipt-title {
                 font-size: 16px;
+            }
+            
+            /* Fix for mobile viewport */
+            @viewport {
+                width: device-width;
+                zoom: 1.0;
+            }
+            
+            /* Prevent text size adjustment */
+            html {
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+            }
+            
+            /* Ensure receipt is visible */
+            #receiptPrint {
+                position: relative;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                transform: none !important;
             }
         }
 
@@ -1038,6 +1072,40 @@
         
         .receipt-enhanced .receipt-title {
             font-size: 18px;
+        }
+        
+        /* Additional mobile optimizations */
+        @media (max-width: 480px) {
+            .btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .table th, .table td {
+                padding: 8px 10px;
+                font-size: 0.9rem;
+            }
+            
+            .modal-body, .modal-footer {
+                padding: 15px;
+            }
+            
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .cart-item-qty {
+                margin-top: 8px;
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            /* Ensure receipt is properly scaled */
+            #receiptPrint {
+                transform: scale(0.85);
+                transform-origin: top center;
+            }
         }
     </style>
 </head>
