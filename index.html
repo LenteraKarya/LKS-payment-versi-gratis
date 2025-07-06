@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Store Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -40,14 +40,12 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: #f5f7fa;
             color: #333;
             line-height: 1.6;
-            -webkit-text-size-adjust: 100%;
         }
 
         .container {
@@ -241,7 +239,6 @@
             border-radius: var(--rounded-sm);
             box-shadow: var(--shadow-sm);
             margin-bottom: 20px;
-            -webkit-overflow-scrolling: touch;
         }
 
         .table {
@@ -376,13 +373,6 @@
             border: 1px solid #ddd;
             border-radius: 3px;
             padding: 3px;
-            -moz-appearance: textfield;
-        }
-
-        .cart-item-qty input::-webkit-outer-spin-button,
-        .cart-item-qty input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
         }
 
         .cart-summary {
@@ -556,7 +546,6 @@
             line-height: 1.4;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
-            font-size: 14px;
         }
 
         .receipt::after {
@@ -771,6 +760,58 @@
             margin-top: 20px;
         }
 
+        /* Additional fee section */
+        .additional-fee-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ddd;
+        }
+
+        .additional-fee-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .additional-fee-option {
+            flex: 1;
+            text-align: center;
+        }
+
+        .additional-fee-option input[type="radio"] {
+            display: none;
+        }
+
+        .additional-fee-option label {
+            display: block;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: var(--rounded-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .additional-fee-option input[type="radio"]:checked + label {
+            background-color: var(--primary-light);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .additional-fee-details {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: var(--rounded-sm);
+        }
+
+        .additional-fee-description {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
         /* Print styles */
         @media print {
             body * {
@@ -824,13 +865,11 @@
                 margin: 20px auto;
             }
             
-            /* Enhanced receipt styling for mobile */
+            /* Fix for receipt text visibility on mobile */
             .receipt {
                 font-size: 14px;
                 max-width: 100%;
                 padding: 15px;
-                transform: scale(0.9);
-                transform-origin: top center;
             }
             
             .receipt-item {
@@ -841,25 +880,8 @@
                 font-size: 16px;
             }
             
-            /* Fix for mobile viewport */
-            @viewport {
-                width: device-width;
-                zoom: 1.0;
-            }
-            
-            /* Prevent text size adjustment */
-            html {
-                -webkit-text-size-adjust: 100%;
-                -ms-text-size-adjust: 100%;
-            }
-            
-            /* Ensure receipt is visible */
-            #receiptPrint {
-                position: relative;
-                display: block !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                transform: none !important;
+            .additional-fee-options {
+                flex-direction: column;
             }
         }
 
@@ -1073,65 +1095,6 @@
         .receipt-enhanced .receipt-title {
             font-size: 18px;
         }
-        
-        /* Additional mobile optimizations */
-        @media (max-width: 480px) {
-            .btn {
-                padding: 8px 15px;
-                font-size: 0.9rem;
-            }
-            
-            .table th, .table td {
-                padding: 8px 10px;
-                font-size: 0.9rem;
-            }
-            
-            .modal-body, .modal-footer {
-                padding: 15px;
-            }
-            
-            .cart-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .cart-item-qty {
-                margin-top: 8px;
-                width: 100%;
-                justify-content: flex-end;
-            }
-            
-            /* Ensure receipt is properly scaled */
-            #receiptPrint {
-                transform: scale(0.85);
-                transform-origin: top center;
-            }
-        }
-        
-        /* Product unit and brand styling */
-        .product-meta {
-            display: flex;
-            gap: 10px;
-            margin-top: 5px;
-        }
-        
-        .product-meta span {
-            font-size: 0.8rem;
-            color: #666;
-            background-color: #f5f5f5;
-            padding: 2px 6px;
-            border-radius: 3px;
-        }
-        
-        /* Enhanced product form */
-        .form-row {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .form-row .form-group {
-            flex: 1;
-        }
     </style>
 </head>
 <body>
@@ -1224,6 +1187,57 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary close-settings-modal">Batal</button>
                 <button class="btn btn-success save-settings"><i class="fas fa-save"></i> Simpan Pengaturan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Fee Modal -->
+    <div id="additionalFeeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Biaya Tambahan</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="additional-fee-options">
+                    <div class="additional-fee-option">
+                        <input type="radio" id="feeNone" name="additionalFee" value="none" checked>
+                        <label for="feeNone">Tidak Ada</label>
+                    </div>
+                    <div class="additional-fee-option">
+                        <input type="radio" id="feeShipping" name="additionalFee" value="shipping">
+                        <label for="feeShipping">Biaya Kirim/Antar</label>
+                    </div>
+                    <div class="additional-fee-option">
+                        <input type="radio" id="feeOther" name="additionalFee" value="other">
+                        <label for="feeOther">Biaya Lainnya</label>
+                    </div>
+                </div>
+                
+                <div id="shippingFeeDetails" class="additional-fee-details">
+                    <div class="form-group">
+                        <label for="shippingFeeAmount">Biaya Kirim/Antar</label>
+                        <input type="number" id="shippingFeeAmount" class="form-control" placeholder="Masukkan biaya kirim">
+                    </div>
+                </div>
+                
+                <div id="otherFeeDetails" class="additional-fee-details">
+                    <div class="form-group">
+                        <label for="otherFeeAmount">Jumlah Biaya</label>
+                        <input type="number" id="otherFeeAmount" class="form-control" placeholder="Masukkan jumlah biaya">
+                    </div>
+                    <div class="form-group">
+                        <label for="otherFeeDescription">Keterangan (maks. 180 karakter)</label>
+                        <textarea id="otherFeeDescription" class="form-control" rows="2" maxlength="180" placeholder="Masukkan keterangan biaya"></textarea>
+                        <div class="additional-fee-description">
+                            <span id="charCount">0</span>/180 karakter
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-additional-fee-modal">Batal</button>
+                <button class="btn btn-success save-additional-fee">Simpan Biaya</button>
             </div>
         </div>
     </div>
@@ -1347,10 +1361,23 @@
                         <span class="summary-label">Pajak (<span id="taxPercentage">10</span>%):</span>
                         <span class="summary-value" id="cartTax">Rp 0</span>
                     </div>
+                    <div class="additional-fee-section">
+                        <div class="summary-row">
+                            <span class="summary-label">Biaya Tambahan:</span>
+                            <span class="summary-value" id="cartAdditionalFee">Rp 0</span>
+                        </div>
+                        <div id="additionalFeeDescription" class="summary-value" style="font-size: 0.8rem; color: #666; text-align: right;"></div>
+                    </div>
                     <div class="summary-row total-row">
                         <span class="summary-label">Total:</span>
                         <span class="summary-value" id="cartTotal">Rp 0</span>
                     </div>
+                </div>
+
+                <div class="form-group mt-3">
+                    <button id="addAdditionalFeeBtn" class="btn btn-outline btn-block">
+                        <i class="fas fa-plus-circle"></i> Tambah Biaya
+                    </button>
                 </div>
 
                 <div class="payment-methods">
@@ -1409,6 +1436,10 @@
                     <span>Pajak (<span id="receiptTaxPercentage">10</span>%)</span>
                     <span id="receiptTax">Rp 0</span>
                 </div>
+                <div class="receipt-item" id="receiptAdditionalFeeItem" style="display: none;">
+                    <span id="receiptAdditionalFeeLabel">Biaya Tambahan</span>
+                    <span id="receiptAdditionalFeeValue">Rp 0</span>
+                </div>
                 <div class="receipt-item">
                     <span>TOTAL</span>
                     <span id="receiptTotal">Rp 0</span>
@@ -1456,33 +1487,16 @@
                     <input type="text" id="productName" class="form-control" placeholder="Masukkan nama produk">
                     <div class="error-message" id="productNameError"></div>
                 </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="productCategory">Kategori</label>
-                        <input type="text" id="productCategory" class="form-control" placeholder="Masukkan kategori">
-                        <div class="error-message" id="productCategoryError"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="productBrand">Merek</label>
-                        <input type="text" id="productBrand" class="form-control" placeholder="Masukkan merek">
-                        <div class="error-message" id="productBrandError"></div>
-                    </div>
+                <div class="form-group">
+                    <label for="productCategory">Kategori</label>
+                    <input type="text" id="productCategory" class="form-control" placeholder="Masukkan kategori">
+                    <div class="error-message" id="productCategoryError"></div>
                 </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="productPrice">Harga</label>
-                        <input type="number" id="productPrice" class="form-control" placeholder="Masukkan harga">
-                        <div class="error-message" id="productPriceError"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="productUnit">Satuan</label>
-                        <input type="text" id="productUnit" class="form-control" placeholder="Pcs, Kg, L, etc" value="Pcs">
-                        <div class="error-message" id="productUnitError"></div>
-                    </div>
+                <div class="form-group">
+                    <label for="productPrice">Harga</label>
+                    <input type="number" id="productPrice" class="form-control" placeholder="Masukkan harga">
+                    <div class="error-message" id="productPriceError"></div>
                 </div>
-                
                 <div class="form-group">
                     <label for="productStock">Stok</label>
                     <input type="number" id="productStock" class="form-control" placeholder="Masukkan stok awal">
@@ -1524,6 +1538,8 @@
             items: [],
             discount: 0,
             tax: 0,
+            additionalFee: 0,
+            additionalFeeDescription: '',
             subtotal: 0,
             total: 0
         };
@@ -1871,9 +1887,7 @@
                 $('#productId').val('');
                 $('#productName').val('');
                 $('#productCategory').val('');
-                $('#productBrand').val('');
                 $('#productPrice').val('');
-                $('#productUnit').val('Pcs');
                 $('#productStock').val('');
                 $('.error-message').hide();
                 $('#productModal').show();
@@ -1884,9 +1898,7 @@
                 const productId = $('#productId').val();
                 const productName = $('#productName').val().trim();
                 const productCategory = $('#productCategory').val().trim();
-                const productBrand = $('#productBrand').val().trim();
                 const productPrice = parseFloat($('#productPrice').val()) || 0;
-                const productUnit = $('#productUnit').val().trim() || 'Pcs';
                 const productStock = parseInt($('#productStock').val()) || 0;
                 
                 // Reset error messages
@@ -1905,18 +1917,8 @@
                     isValid = false;
                 }
                 
-                if (!productBrand) {
-                    $('#productBrandError').text('Merek harus diisi').show();
-                    isValid = false;
-                }
-                
                 if (productPrice <= 0) {
                     $('#productPriceError').text('Harga harus lebih dari 0').show();
-                    isValid = false;
-                }
-                
-                if (!productUnit) {
-                    $('#productUnitError').text('Satuan harus diisi').show();
                     isValid = false;
                 }
                 
@@ -1940,9 +1942,7 @@
                                 ...products[productIndex],
                                 name: productName,
                                 category: productCategory,
-                                brand: productBrand,
                                 price: productPrice,
-                                unit: productUnit,
                                 stock: productStock
                             };
                             
@@ -1954,9 +1954,7 @@
                             id: 'P' + moment().format('YYYYMMDDHHmmss'),
                             name: productName,
                             category: productCategory,
-                            brand: productBrand,
                             price: productPrice,
-                            unit: productUnit,
                             stock: productStock
                         };
                         
@@ -1988,9 +1986,7 @@
                     $('#productId').val(product.id);
                     $('#productName').val(product.name);
                     $('#productCategory').val(product.category);
-                    $('#productBrand').val(product.brand || '');
                     $('#productPrice').val(product.price);
-                    $('#productUnit').val(product.unit || 'Pcs');
                     $('#productStock').val(product.stock);
                     $('.error-message').hide();
                     $('#productModal').show();
@@ -2084,6 +2080,84 @@
                 }
             });
             
+            // Additional fee button
+            $('#addAdditionalFeeBtn').click(function() {
+                // Reset additional fee form
+                $('#feeNone').prop('checked', true);
+                $('#shippingFeeAmount').val('');
+                $('#otherFeeAmount').val('');
+                $('#otherFeeDescription').val('');
+                $('#charCount').text('0');
+                $('#shippingFeeDetails').hide();
+                $('#otherFeeDetails').hide();
+                
+                $('#additionalFeeModal').show();
+            });
+            
+            // Additional fee option change
+            $('input[name="additionalFee"]').change(function() {
+                const selectedOption = $(this).val();
+                
+                $('#shippingFeeDetails').hide();
+                $('#otherFeeDetails').hide();
+                
+                if (selectedOption === 'shipping') {
+                    $('#shippingFeeDetails').show();
+                } else if (selectedOption === 'other') {
+                    $('#otherFeeDetails').show();
+                }
+            });
+            
+            // Character count for description
+            $('#otherFeeDescription').on('input', function() {
+                const charCount = $(this).val().length;
+                $('#charCount').text(charCount);
+            });
+            
+            // Save additional fee
+            $('.save-additional-fee').click(function() {
+                const selectedOption = $('input[name="additionalFee"]:checked').val();
+                
+                if (selectedOption === 'shipping') {
+                    const shippingFee = parseFloat($('#shippingFeeAmount').val()) || 0;
+                    if (shippingFee < 0) {
+                        showToast('Biaya kirim tidak boleh negatif', 'error');
+                        return;
+                    }
+                    
+                    currentCart.additionalFee = shippingFee;
+                    currentCart.additionalFeeDescription = 'Biaya Kirim/Antar';
+                } else if (selectedOption === 'other') {
+                    const otherFee = parseFloat($('#otherFeeAmount').val()) || 0;
+                    const description = $('#otherFeeDescription').val().trim();
+                    
+                    if (otherFee < 0) {
+                        showToast('Biaya tidak boleh negatif', 'error');
+                        return;
+                    }
+                    
+                    if (description === '') {
+                        showToast('Keterangan biaya harus diisi', 'error');
+                        return;
+                    }
+                    
+                    currentCart.additionalFee = otherFee;
+                    currentCart.additionalFeeDescription = description;
+                } else {
+                    currentCart.additionalFee = 0;
+                    currentCart.additionalFeeDescription = '';
+                }
+                
+                updateCart();
+                $('#additionalFeeModal').hide();
+                showToast('Biaya tambahan berhasil disimpan', 'success');
+            });
+            
+            // Close additional fee modal
+            $('.close-additional-fee-modal').click(function() {
+                $('#additionalFeeModal').hide();
+            });
+            
             // Complete payment
             $('#completePayment').click(function() {
                 const paymentAmount = parseFloat($('#paymentAmount').val()) || 0;
@@ -2111,6 +2185,8 @@
                                 subtotal: currentCart.subtotal,
                                 discount: currentCart.discount,
                                 tax: currentCart.tax,
+                                additionalFee: currentCart.additionalFee,
+                                additionalFeeDescription: currentCart.additionalFeeDescription,
                                 total: currentCart.total,
                                 paymentMethod: $('input[name="paymentMethod"]:checked').val(),
                                 paymentAmount: paymentAmount,
@@ -2244,8 +2320,7 @@
             if (searchTerm) {
                 filteredProducts = filteredProducts.filter(p => 
                     p.name.toLowerCase().includes(searchTerm) || 
-                    p.category.toLowerCase().includes(searchTerm) ||
-                    (p.brand && p.brand.toLowerCase().includes(searchTerm))
+                    p.category.toLowerCase().includes(searchTerm)
                 );
             }
             
@@ -2269,14 +2344,7 @@
                     
                     $('#productListBody').append(`
                         <tr>
-                            <td>
-                                <div>${product.name}</div>
-                                <div class="product-meta">
-                                    <span>${product.category}</span>
-                                    ${product.brand ? `<span>${product.brand}</span>` : ''}
-                                    <span>${product.unit || 'Pcs'}</span>
-                                </div>
-                            </td>
+                            <td>${product.name}</td>
                             <td>${formatCurrency(product.price)}</td>
                             <td class="${stockClass}">${product.stock}</td>
                             <td>
@@ -2312,7 +2380,7 @@
             currentCart.tax = taxableAmount * (settings.taxRate / 100);
             
             // Calculate total
-            currentCart.total = taxableAmount + currentCart.tax;
+            currentCart.total = taxableAmount + currentCart.tax + currentCart.additionalFee;
             
             // Save cart
             saveCurrentCart();
@@ -2334,10 +2402,6 @@
                         <div class="cart-item">
                             <div class="cart-item-info">
                                 <div class="cart-item-name">${item.product.name}</div>
-                                <div class="product-meta">
-                                    <span>${item.product.unit || 'Pcs'}</span>
-                                    ${item.product.brand ? `<span>${item.product.brand}</span>` : ''}
-                                </div>
                                 <div class="cart-item-price">${formatCurrency(item.product.price)}</div>
                             </div>
                             <div class="cart-item-qty">
@@ -2356,7 +2420,15 @@
             $('#cartSubtotal').text(formatCurrency(currentCart.subtotal));
             $('#cartDiscount').text(formatCurrency(currentCart.discount));
             $('#cartTax').text(formatCurrency(currentCart.tax));
+            $('#cartAdditionalFee').text(formatCurrency(currentCart.additionalFee));
             $('#cartTotal').text(formatCurrency(currentCart.total));
+            
+            // Update additional fee description
+            if (currentCart.additionalFee > 0) {
+                $('#additionalFeeDescription').text(currentCart.additionalFeeDescription).show();
+            } else {
+                $('#additionalFeeDescription').text('').hide();
+            }
         }
         
         // Reset cart
@@ -2365,6 +2437,8 @@
                 items: [],
                 discount: 0,
                 tax: 0,
+                additionalFee: 0,
+                additionalFeeDescription: '',
                 subtotal: 0,
                 total: 0
             };
@@ -2394,10 +2468,9 @@
             let itemsHTML = '';
             transaction.items.forEach(item => {
                 const itemTotal = item.product.price * item.quantity;
-                const unit = item.product.unit || 'Pcs';
                 itemsHTML += `
                     <div class="receipt-item">
-                        <div class="receipt-item-name">${item.quantity} ${unit} ${item.product.name}</div>
+                        <div class="receipt-item-name">${item.quantity}x ${item.product.name}</div>
                         <div class="receipt-item-price">${formatCurrency(itemTotal)}</div>
                     </div>
                 `;
@@ -2416,6 +2489,15 @@
             $('#receiptPaymentAmount').text(formatCurrency(transaction.paymentAmount));
             $('#receiptChange').text(formatCurrency(transaction.change));
             $('#receiptCashier').text(transaction.cashier);
+            
+            // Update additional fee if exists
+            if (transaction.additionalFee > 0) {
+                $('#receiptAdditionalFeeItem').show();
+                $('#receiptAdditionalFeeLabel').text(transaction.additionalFeeDescription);
+                $('#receiptAdditionalFeeValue').text(formatCurrency(transaction.additionalFee));
+            } else {
+                $('#receiptAdditionalFeeItem').hide();
+            }
             
             // Fixed footer text
             const footerHTML = `
