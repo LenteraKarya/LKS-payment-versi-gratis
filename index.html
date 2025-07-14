@@ -1514,6 +1514,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
+        // Enhanced Online Store Pro Application
+        // Version 1.0.0
+        // By Cendhanu - Lentera Karya Situbondo
+
         // Local storage keys
         const STORAGE_KEYS = {
             PRODUCTS: 'online_store_products',
@@ -1549,8 +1553,14 @@
             const toast = $('#toast');
             const toastMessage = $('#toast-message');
             
+            // Set icon based on type
+            let icon = 'fa-info-circle';
+            if (type === 'success') icon = 'fa-check-circle';
+            if (type === 'error') icon = 'fa-exclamation-circle';
+            if (type === 'warning') icon = 'fa-exclamation-triangle';
+            
             toast.removeClass('success error warning info').addClass(type);
-            toastMessage.text(message);
+            toastMessage.html(`<i class="fas ${icon}"></i> ${message}`);
             toast.addClass('show');
             
             setTimeout(() => {
@@ -1620,6 +1630,8 @@
         // Create backup data
         function createBackupData() {
             return {
+                version: '1.0.0',
+                backupDate: new Date(),
                 products: JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS)) || [],
                 transactions: JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSACTIONS)) || [],
                 storeInfo: JSON.parse(localStorage.getItem(STORAGE_KEYS.STORE_INFO)) || null,
@@ -1651,9 +1663,15 @@
                 reader.onload = function(e) {
                     try {
                         const backupData = JSON.parse(e.target.result);
+                        
+                        // Basic validation
+                        if (!backupData.products || !backupData.transactions || !backupData.settings) {
+                            throw new Error('Format file backup tidak valid');
+                        }
+                        
                         resolve(backupData);
                     } catch (error) {
-                        reject('Format file backup tidak valid');
+                        reject(error.message || 'Gagal memproses file backup');
                     }
                 };
                 
@@ -1665,6 +1683,7 @@
             });
         }
         
+        // Initialize the application
         $(document).ready(function() {
             // Set current date
             updateCurrentDate();
@@ -1688,7 +1707,7 @@
             });
             
             // Close settings modal
-            $('.close-settings-modal').click(function() {
+            $('.close-settings-modal, .modal-close').click(function() {
                 $('#settingsModal').hide();
             });
             
@@ -1746,9 +1765,14 @@
                 showLoading('Menyiapkan backup data...');
                 
                 setTimeout(() => {
-                    downloadBackup();
-                    hideLoading();
-                    showToast('Backup data berhasil diunduh', 'success');
+                    try {
+                        downloadBackup();
+                        showToast('Backup data berhasil diunduh', 'success');
+                    } catch (error) {
+                        showToast('Gagal membuat backup: ' + error.message, 'error');
+                    } finally {
+                        hideLoading();
+                    }
                 }, 500);
             });
             
@@ -1763,11 +1787,6 @@
                         
                         restoreFromBackup(file)
                             .then(backupData => {
-                                // Validate backup data
-                                if (!backupData.products || !backupData.transactions || !backupData.settings) {
-                                    throw new Error('Format backup tidak valid');
-                                }
-                                
                                 // Save backup data to local storage
                                 localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(backupData.products));
                                 localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(backupData.transactions));
@@ -1794,7 +1813,7 @@
                                 showToast('Data berhasil di-restore', 'success');
                             })
                             .catch(error => {
-                                showToast(error.message || 'Gagal memproses backup', 'error');
+                                showToast(error, 'error');
                             })
                             .finally(() => {
                                 hideLoading();
@@ -1955,7 +1974,9 @@
                             name: productName,
                             category: productCategory,
                             price: productPrice,
-                            stock: productStock
+                            stock: productStock,
+                            createdAt: new Date(),
+                            updatedAt: new Date()
                         };
                         
                         products.push(newProduct);
@@ -2200,6 +2221,7 @@
                                 if (productIndex !== -1) {
                                     products[productIndex].stock -= item.quantity;
                                     if (products[productIndex].stock < 0) products[productIndex].stock = 0;
+                                    products[productIndex].updatedAt = new Date();
                                 }
                             });
                             
@@ -2324,6 +2346,9 @@
                 );
             }
             
+            // Sort by name
+            filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+            
             // Display products
             $('#productListBody').empty();
             
@@ -2341,12 +2366,13 @@
             } else {
                 filteredProducts.forEach(product => {
                     const stockClass = product.stock > 5 ? 'text-success' : product.stock > 0 ? 'text-warning' : 'text-danger';
+                    const stockText = product.stock > 0 ? product.stock : 'Habis';
                     
                     $('#productListBody').append(`
                         <tr>
                             <td>${product.name}</td>
                             <td>${formatCurrency(product.price)}</td>
-                            <td class="${stockClass}">${product.stock}</td>
+                            <td class="${stockClass}">${stockText}</td>
                             <td>
                                 <button class="btn btn-success btn-sm add-to-cart" data-id="${product.id}" 
                                     ${product.stock <= 0 ? 'disabled title="Stok habis"' : ''}>
@@ -2429,6 +2455,9 @@
             } else {
                 $('#additionalFeeDescription').text('').hide();
             }
+            
+            // Update payment amount placeholder
+            $('#paymentAmount').attr('placeholder', `Minimal ${formatCurrency(currentCart.total)}`);
         }
         
         // Reset cart
@@ -2458,7 +2487,7 @@
                                 transaction.paymentMethod === 'transfer' ? 'Transfer Bank' : 'E-Wallet';
             
             // Update receipt header
-            $('#receiptStoreName').text(storeInfo.storeName);
+            $('#receiptStoreName').text(storeInfo.storeName.toUpperCase());
             $('#receiptStoreAddress').text(storeInfo.storeAddress);
             $('#receiptStorePhone').text('Telp: ' + storeInfo.storePhone);
             $('#receiptDate').text(receiptDate);
